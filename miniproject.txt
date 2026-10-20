@@ -1,0 +1,218 @@
+// (Assignments 1-6 + Capstone)
+
+const ask = (msg, fallback) =>
+  typeof prompt === "function" ? prompt(msg, fallback) : String(fallback);
+
+// ---------- Assignment 1: Variables, Data Types, Console ----------
+console.log("=== Assignment 1 ===");
+var userName = "Alice";
+let age = 25;
+const isEmployed = true;
+const skills = ["HTML", "CSS", "JavaScript"];
+
+console.log(`Name: ${userName} (Type: ${typeof userName})`);
+console.log(`Age: ${age} (Type: ${typeof age})`);
+console.log(`Is Employed: ${isEmployed} (Type: ${typeof isEmployed})`);
+console.log(
+  `Skills: ${JSON.stringify(skills).replace(/,/g, ", ")} (Type: ${typeof skills})`,
+);
+
+// ---------- Assignment 2: Operators, Expressions, Input ----------
+console.log("\n=== Assignment 2 ===");
+const bill = Number(ask("Enter bill amount:", 100));
+const tipPercent = Number(ask("Enter tip percentage:", 15));
+let tip = (bill * tipPercent) / 100;
+let total = bill;
+total += tip;
+
+console.log(`Subtotal: $${bill}`);
+console.log(`Tip Percentage: ${tipPercent}%`);
+console.log(`Calculated Tip: $${tip}`);
+console.log(`Total Amount to Pay: $${total}`);
+
+// ---------- Assignment 3: Conditional Logic ----------
+console.log("\n=== Assignment 3 ===");
+const score = Number(ask("Enter test score (0-100):", 85));
+
+if (Number.isNaN(score) || score < 0 || score > 100) {
+  console.log("Invalid score. Please enter a number between 0 and 100.");
+} else {
+  let grade;
+  switch (Math.floor(score / 10)) {
+    case 10:
+    case 9:
+      grade = "A";
+      break;
+    case 8:
+      grade = "B";
+      break;
+    case 7:
+      grade = "C";
+      break;
+    case 6:
+      grade = "D";
+      break;
+    default:
+      grade = "F";
+  }
+  const status = score >= 40 ? "Passed" : "Failed";
+  console.log(`Score: ${score}`);
+  console.log(`Grade: ${grade}`);
+  console.log(`Status: ${status}`);
+}
+
+// ---------- Assignment 4: Loops ----------
+console.log("\n=== Assignment 4 ===");
+console.log("-- Multiplication Table of 5 --");
+for (let i = 1; i <= 5; i++) {
+  console.log(`5 x ${i} = ${5 * i}`);
+}
+
+console.log("\n-- First number > 10 divisible by 6 --");
+let n = 11;
+while (true) {
+  if (n % 6 === 0) {
+    console.log(`Found: ${n}`);
+    break;
+  }
+  n++;
+}
+
+console.log("\n-- do...while with continue (odd numbers 1-7) --");
+let k = 0;
+do {
+  k++;
+  if (k % 2 === 0) continue; // skip even numbers
+  console.log(`Odd number: ${k}`);
+} while (k < 7);
+
+// ---------- Assignment 5: Functions and Scope ----------
+console.log("\n=== Assignment 5 ===");
+function rectangleArea(length = 5, width = 4) {
+  return length * width;
+}
+const rectangleAreaArrow = (length = 5, width = 4) => length * width;
+
+console.log(`Standard Function Area (Default 5x4): ${rectangleArea()}`);
+console.log(`Arrow Function Area (Custom 10x3): ${rectangleAreaArrow(10, 3)}`);
+
+{
+  let blockVar = "I only exist inside this block";
+}
+try {
+  console.log(blockVar);
+} catch (err) {
+  console.log(
+    `Scope Test Error: ${err.name}: ${err.message} (when accessed outside block)`,
+  );
+}
+
+// ---------- Assignment 6: Arrays, Objects, Methods ----------
+console.log("\n=== Assignment 6 ===");
+const products = [
+  { name: "Laptop", price: 800 },
+  { name: "Mouse", price: 25 },
+  { name: "Keyboard", price: 45 },
+];
+
+console.log("-- All Products (forEach) --");
+products.forEach((p) => console.log(`Item: ${p.name} - Price: $${p.price}`));
+
+console.log("\n-- Filtered Products (Price < $50) --");
+console.log(products.filter((p) => p.price < 50));
+
+console.log("\n-- Mapped Product Tags (map) --");
+console.log(products.map((p) => `${p.name.toUpperCase()} costs $${p.price}`));
+
+// ---------- Capstone: Interactive Product Inventory & Analytics ----------
+console.log("\n\n=== CAPSTONE ===");
+console.log("--- Initializing Inventory System ---");
+
+const inventory = [
+  { name: "Laptop", price: 800 },
+  { name: "Mouse", price: 25 },
+];
+
+// 1. Input with validation (loop + break/continue)
+const MAX_ATTEMPTS = 3;
+let added = false;
+for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+  const rawName = ask("Enter product name:", "Monitor");
+  const rawPrice = ask("Enter product price:", 150);
+
+  if (rawName === null || rawPrice === null) break; // user cancelled
+  const name = String(rawName).trim();
+  const price = Number(rawPrice);
+
+  if (name === "" || Number.isNaN(price) || price <= 0) {
+    console.log(
+      `Invalid input (attempt ${attempt}/${MAX_ATTEMPTS}). Try again.`,
+    );
+    continue;
+  }
+  inventory.push({ name, price });
+  console.log(`[Prompt executed: User adds "${name}" at "$${price}"]`);
+  added = true;
+  break;
+}
+if (!added) console.log("No new product added.");
+
+// 2. Categorize with if/else + switch
+const PREMIUM_MIN = 500;
+const BUDGET_MAX = 50;
+
+function categorize(price) {
+  let tier;
+  if (price >= PREMIUM_MIN) tier = "premium";
+  else if (price < BUDGET_MAX) tier = "budget";
+  else tier = "standard";
+
+  switch (tier) {
+    case "premium":
+      return "Premium";
+    case "budget":
+      return "Budget";
+    default:
+      return "Standard";
+  }
+}
+
+// 3. Report with forEach
+console.log("\n--- Processing Inventory Roster (forEach) ---");
+inventory.forEach((item) => {
+  console.log(
+    `* Item: ${item.name} ($${item.price}) -> Category: ${categorize(item.price)}`,
+  );
+});
+
+// 4. Functions & scope: stats, tax/discount
+function totalInventoryValue(items) {
+  let sum = 0; // local scope
+  for (const item of items) sum += item.price;
+  return sum;
+}
+const applyAdjustments = (price, taxRate = 0, discountRate = 0) =>
+  price * (1 - discountRate) * (1 + taxRate);
+
+// 5. filter + map
+const affordable = inventory
+  .filter((item) => item.price < 200)
+  .map((item) => item.name);
+const report = inventory.map(
+  (item) => `${item.name.toUpperCase()}: $${item.price}`,
+);
+
+console.log("\n--- Financial Analytics ---");
+console.log(`Total Inventory Value: $${totalInventoryValue(inventory)}`);
+console.log(
+  `Filtered Affordable Items (Under $200): ${JSON.stringify(affordable).replace(/,/g, ", ")}`,
+);
+console.log(
+  `Formatted Report List: ${JSON.stringify(report).replace(/,/g, ", ")}`,
+);
+
+// Bonus: tax/discount demo
+const withTax = applyAdjustments(totalInventoryValue(inventory), 0.18, 0.1);
+console.log(
+  `(Bonus) Total after 10% discount + 18% tax: $${withTax.toFixed(2)}`,
+);
